@@ -10,14 +10,6 @@ ClientsController.getClients = async (req, res) => {
     res.json (Clients)
 }
 
-//post - agregar
-          
-ClientsController.createClients = async (req, res) => {
-    const {name, email, password,telephone,direction,DUI} = req.body; //req.body = lo que le pedimos al frontend
-    const  newclients = new ClientsModel({name, email, password,telephone,direction,DUI});
-    await newclients.save()
-    res.json({message: "client saved"})
-}
  
 //delete
 

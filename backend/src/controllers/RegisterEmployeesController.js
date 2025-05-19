@@ -1,4 +1,4 @@
-import cutomersModel from "../models/Customer.js";
+import employeesModel from "../models/Employees.js";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import nodemailer from "nodemailer"
@@ -6,20 +6,20 @@ import crypto from "crypto"
 import {config} from "../config.js"
 
 
-const registerCustomerController = {}
-registerCustomerController.registerCustomer = async (req, res) => {
+const registerEmployeesController = {}
+registerEmployeesController.registerEmployees = async (req, res) => {
     const {name, email, password, telephone, direction, dui } = req.body; //req.body = lo que le pedimos al frontend
     try{
-const existCustomer = await custonerModel.findOne({email})
+const existEmployee = await employeesModel.findOne({email})
 
-if (existCustomer){
-return res.json ({message:"Customer already exist"})
+if (existEmployee){
+return res.json ({message:"Employee already exists"})
 }
 
     const passwordHash = await bcryptjs.hash(password, 10)
 
-    const  newcustomer = new customerModel({  name, email, password:passwordHash, telephone, direction, dui });
-    await newcustomer.save()
+    const newEmployee = new employeesModel({  name, email, password:passwordHash, telephone, direction, dui });
+    await newEmployee.save()
 const verificationCode = crypto.randomBytes(3).toString("hex")
 const expiresAt = Date.now() + 2 * 60 * 60 * 1000;
 
@@ -59,7 +59,7 @@ if (error) console.log("error aqui", error)
     res.json ({message: "Email sent"})
   })
    
-  res.json ({message: "Customer registered, pls verify ur email"})
+  res.json ({message: "Employee registered, please verify your email"})
 
     }catch(error){
         res.json ({message: "error" + error})
@@ -68,7 +68,7 @@ if (error) console.log("error aqui", error)
 }
 
 
-registerCustomerController.verifyCodeEmail = async (req, res) => {
+registerEmployeesController.verifyCodeEmail = async (req, res) => {
     const {verificationCode} = req.body;
     const token = req.cookie.verificationCode;
 
@@ -86,13 +86,13 @@ if (verificationCode !== storedCode){
     return res.json ({message: "invalid verfication code"})
 }
 
-const Customer = await cutomersModel.findOne({email})
-if (!Customer){
-return res.json({message:"customer not found"})
+const Employee = await employeesModel.findOne({email})
+if (!Employee){
+return res.json({message:"employee not found"})
 }
 
-Customer.isVerfied = true,
-await Customer.save()
+Employee.isVerified = true,
+await Employee.save()
 
 res.clearCookie("verificationCode")
 res.json({message: "email verify succesfull"})
@@ -102,4 +102,4 @@ res.json({message: "error"+ error})
     }
 }
 
-export default registerCustomerController
+export default registerEmployeesController

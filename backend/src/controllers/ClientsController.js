@@ -10,7 +10,24 @@ ClientsController.getClients = async (req, res) => {
     res.json (Clients)
 }
 
- 
+//create - post
+
+ClientsController.createClients = async (req, res) => {
+    const {name, email, password, telephone, direction, dui} = req.body;
+    const newClient = new ClientsModel({
+        name,
+        email,
+        password,
+        telephone,
+        direction,
+        dui
+    });
+    
+    await newClient.save();
+    res.json({message: "client created successfully"});
+}
+
+
 //delete
 
 ClientsController.deleteClients = async (req, res) => {
@@ -30,7 +47,7 @@ await ClientsModel.findByIdAndUpdate(req.params.id, {
     direction,
     dui
 }, {new: true});
-res.json({message: "client deleted"})
+res.json({message: "client updated"})
 }
 
 export default ClientsController;
